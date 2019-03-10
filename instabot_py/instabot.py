@@ -1027,11 +1027,10 @@ class InstaBot:
     def mainloop(self):
         while self.prog_run and self.login_status:
             now = datetime.datetime.now()
-            if datetime.time(
-                self.start_at_h, self.start_at_m
-            ) <= now.time() and now.time() <= datetime.time(
-                self.end_at_h, self.end_at_m
-            ):
+            start = datetime.time(self.start_at_h, self.start_at_m)
+            end = datetime.time(self.end_at_h, self.end_at_m)
+            if start <= end and start <= now.time() <= end  or  \
+               end < start and (start <= now.time() or now.time() <= end ) :
                 # ------------------- Get media_id -------------------
                 if len(self.media_by_tag) == 0:
                     self.get_media_id_by_tag(random.choice(self.tag_list))
@@ -1052,7 +1051,7 @@ class InstaBot:
                 self.new_auto_mod_comments()
                 # Bot iteration in 1 sec
                 time.sleep(1)
-                # print("Tic!")
+                #print("Tic!")
             else:
                 print(
                     "!!sleeping until {hour}:{min}".format(
