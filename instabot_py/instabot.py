@@ -77,7 +77,7 @@ class InstaBot:
         "https://github.com/instabot-py/instabot.py/raw/master/version.txt"
     )
 
-    user_agent = "" ""
+    user_agent = "" #"Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0"
     accept_language = "en-US,en;q=0.5"
 
     # If instagram ban you - query return 400 error.
@@ -254,6 +254,7 @@ class InstaBot:
             "Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.02",
             "Mozilla/5.0 (Windows NT 6.0) AppleWebKit/535.1 (KHTML, like Gecko) Chrome/13.0.782.112 Safari/535.1",
             "Mozilla/4.0 (compatible; MSIE 6.0; MSIE 5.5; Windows NT 5.0) Opera 7.02 Bork-edition [en]",
+            "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:65.0) Gecko/20100101 Firefox/65.0",
         ]
         try:
             fallback = random.sample(list_of_ua, 1)
