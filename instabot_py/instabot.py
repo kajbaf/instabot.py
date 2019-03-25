@@ -1463,7 +1463,7 @@ class InstaBot:
                         self.is_fake_account = False
                         self.write_log("   >This is a normal account")
 
-                    if media > 0 and follows / media < 25 and follower / media < 25:
+                    if media > 0 and follows > 1000 and follower / media < 25:
                         self.is_active_user = True
                         self.write_log("   >This user is active")
                     else:
