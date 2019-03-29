@@ -269,7 +269,7 @@ class InstaBot:
             fake_ua = random.sample(list_of_ua, 1)
             self.user_agent = check_and_insert_user_agent(self, str(fake_ua[0]))
 
-        self.current_version = 1_553_282_075
+        self.current_version = 1_553_611_447
 
         self.bot_start = datetime.datetime.now()
         self.bot_start_ts = time.time()
@@ -355,6 +355,7 @@ class InstaBot:
         self.media_on_feed = []
         self.media_by_user = []
         self.current_user_info = ""
+        self.current_owner = ""
         self.unwanted_username_list = unwanted_username_list
         now_time = datetime.datetime.now()
         self.check_for_bot_update()
@@ -1116,7 +1117,7 @@ class InstaBot:
                 self.write_log("Trying to unlike media")
                 self.auto_unlike()
                 self.next_iteration["Unlike"] = time.time() + self.add_time(
-                    self.unfollow_delay
+                    self.unlike_per_day
                 )
 
     def new_auto_mod_follow(self):
@@ -1264,6 +1265,9 @@ class InstaBot:
             is False
         ):
             comment_text = self.generate_comment()
+            if "@username@" in comment_text:
+                comment_text = comment_text.replace("@username@", self.current_owner)
+
             log_string = f"Trying to comment: {self.media_by_tag[0]['node']['id']}"
             self.write_log(log_string)
             if (
@@ -1307,6 +1311,11 @@ class InstaBot:
                 )["entry_data"]["PostPage"][
                     0
                 ]  # window._sharedData = (.*?);
+
+                self.current_owner = all_data["graphql"]["shortcode_media"]["owner"][
+                    "username"
+                ]
+
                 if (
                     all_data["graphql"]["shortcode_media"]["owner"]["id"]
                     == self.user_id
@@ -1355,7 +1364,7 @@ class InstaBot:
                 self.media_by_tag.remove(self.media_by_tag[0])
                 return True
         except:
-            self.write_log("Couldn't comment post, resuming.")
+            self.write_log(f"Couldn't comment post, resuming. {url_check}")
             del self.media_by_tag[0]
             return True
 
@@ -1391,11 +1400,11 @@ class InstaBot:
                 log_string = "api limit reached from instagram. Will try later"
                 self.write_log(log_string)
                 return False
-            for wluser in self.unfollow_whitelist:
-                if wluser == current_user:
-                    log_string = "found whitelist user, starting search again"
-                    self.write_log(log_string)
-                    break
+            if current_user in self.unfollow_whitelist:
+                log_string = "found whitelist user, not unfollowing"
+                # problem, if just one user in unfollowlist -> might create inf. loop. therefore just skip round
+                self.write_log(log_string)
+                return False
             else:
                 checking = False
 
